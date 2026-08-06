@@ -132,7 +132,7 @@ export default function RegistrantsPage() {
       'رقم الموبايل': item.data.phoneNumber ? `="${item.data.phoneNumber}"` : '',
       'رقم الواتساب': (item.data.whatsappNumber || item.data.phoneNumber) ? `="${item.data.whatsappNumber || item.data.phoneNumber}"` : '',
       'حالة الطلب': STATUS_LABELS[item.data.status]?.label || item.data.status,
-      'مرجع الإيصال': item.data.ocrExtractedReference ? `="${item.data.ocrExtractedReference}"` : '',
+      'مرجع الإيصال': '',
       'تاريخ التسجيل': item.data.createdAt?.toDate?.()
         ? new Date(item.data.createdAt.toDate()).toLocaleDateString('ar-EG')
         : '',
@@ -435,7 +435,7 @@ export default function RegistrantsPage() {
                         </span>
                       </td>
                       <td style={{ fontSize: '0.875rem', color: '#fbba33', padding: '1rem 1.25rem', fontFamily: 'monospace' }}>
-                        {item.data.ocrExtractedReference || '—'}
+                        —
                       </td>
                       <td style={{ fontSize: '0.8125rem', color: 'rgba(247, 240, 228, 0.55)', padding: '1rem 1.25rem' }}>
                         {item.data.createdAt?.toDate?.()

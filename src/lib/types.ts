@@ -8,9 +8,6 @@ export type RegistrantStatus =
   | 'approved'
   | 'rejected';
 
-export type OcrConfidence = 'high' | 'low' | 'failed';
-export type OcrStatus = 'queued' | 'processing' | 'done' | 'failed';
-
 export interface Registrant {
   fullName: string;
   phoneNumber: string;
@@ -18,11 +15,6 @@ export interface Registrant {
   church: string;
   paymentScreenshotUrl: string;
   status: RegistrantStatus;
-  ocrStatus: OcrStatus;
-  ocrExtractedReference: string | null;
-  ocrExtractedAmount: number | null;
-  ocrExtractedSenderName: string | null;
-  ocrConfidence: OcrConfidence | null;
   adminNotes: string | null;
   createdAt: Timestamp;
   verifiedAt: Timestamp | null;
@@ -58,16 +50,6 @@ export type StaffRole = 'admin' | 'usher';
 export interface Staff {
   name: string;
   role: StaffRole;
-}
-
-// ─── OCR Extraction Result ─────────────────────────────────────────
-export interface OcrExtractionResult {
-  reference_number: string | null;
-  amount: number | null;
-  sender_name: string | null;
-  transaction_date: string | null;
-  confidence: OcrConfidence;
-  notes: string;
 }
 
 // ─── Bank Statement CSV Row ────────────────────────────────────────

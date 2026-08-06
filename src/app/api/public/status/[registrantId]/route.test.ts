@@ -42,7 +42,6 @@ describe('GET /api/public/status/[registrantId]', () => {
       whatsappNumber: '01234567890',
       paymentScreenshotUrl: 'https://secret.url/image.png',
       adminNotes: 'Confidential note',
-      ocrExtractedAmount: 100,
       createdAt: { toDate: () => new Date('2026-07-26T20:00:00Z') },
     };
 
@@ -76,6 +75,5 @@ describe('GET /api/public/status/[registrantId]', () => {
     expect(json.whatsappNumber).toBeUndefined();
     expect(json.paymentScreenshotUrl).toBeUndefined();
     expect(json.adminNotes).toBeUndefined();
-    expect(json.ocrExtractedAmount).toBeUndefined();
   });
 });
