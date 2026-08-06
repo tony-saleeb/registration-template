@@ -1,0 +1,39 @@
+---
+description: Project rules for the event registration template
+alwaysApply: true
+---
+
+# Event Registration Template — project rules
+
+Next.js 16 (App Router, Turbopack) · React 19 · TypeScript strict · Firebase (Firestore/Auth/Storage) · Tailwind v4 · Vercel · Arabic-first RTL
+
+This codebase is a **sellable template**. Every change ships to paying customers on their own Firebase and Vercel accounts. A security mistake here is replicated N times.
+
+## Non-negotiables
+
+- **Never weaken `firestore.rules` or `storage.rules`.** If a change appears to require looser rules, stop and say so instead of loosening them.
+- **Never introduce a fallback secret, default password, or default passcode.** A missing env var must throw, never degrade to a default.
+- **Never log or return raw exception text to a client.** Log server-side, return a generic message plus a correlation ID.
+- **All user-facing strings are Arabic.** Preserve existing Arabic copy character-for-character. Never translate, reword, or "improve" it. Watch for RTL punctuation and the `✓` character in the WhatsApp template — that specific glyph was chosen to avoid a WhatsApp symbol-corruption bug.
+- **`npx tsc --noEmit` must stay at zero errors.** `strict: true` is not negotiable.
+- Next.js **16** with Turbopack — APIs differ from 14/15. Check `node_modules/next/dist` before using an App Router API you are unsure about. Do not assume.
+
+## Conventions
+
+- Path alias `@/*` → `./src/*`
+- Server-only Firebase access via `@/lib/firebase/admin` (lazy singleton). Client via `@/lib/firebase/client`.
+- API routes return `NextResponse.json`. Auth via `requireAdmin` / `requireUsher` from `@/lib/auth/guards`.
+- Domain types live in `@/lib/types` — extend there, never redeclare inline.
+- Customer-configurable values live in `/config`. Never hardcode an event name, price, phone number, colour, or Arabic string in `src/`.
+- Server-only env vars are read through lazy getters in `@/lib/env` that throw when unset. Never read `process.env` directly in a route.
+
+## Scope discipline
+
+- Change only the files named in the task. If a fix requires touching an unnamed file, list it and ask first.
+- Do not "improve" adjacent code, reformat untouched lines, or add dependencies not named in the task.
+- Do not add comments explaining what you changed — the commit message does that.
+- Do not create summary markdown files describing your work unless asked.
+
+## Definition of done
+
+Every task ends with: `npx tsc --noEmit` clean, `npx next build` succeeding, `npx vitest run` passing, and the task's stated acceptance criteria met. If a gate fails, report the failure — do not weaken a test or a rule to make it pass.
