@@ -15,11 +15,10 @@ export async function POST(request: NextRequest) {
 
   try {
     const db = getAdminDb();
-    // Query all registrants with status 'manual_review' that have OCR results
+    // Query registrants awaiting match against the bank statement
     const snapshot = await db
       .collection('registrants')
       .where('status', '==', 'manual_review')
-      .where('ocrConfidence', '==', 'high')
       .get();
 
     let matched = 0;
@@ -29,7 +28,7 @@ export async function POST(request: NextRequest) {
     for (const regDoc of snapshot.docs) {
       reviewed++;
       const regData = regDoc.data();
-      const extractedRef = regData.ocrExtractedReference;
+      const extractedRef = regData.selfReportedReference;
 
       if (!extractedRef) continue;
 
@@ -53,11 +52,11 @@ export async function POST(request: NextRequest) {
 
       // Amount tolerance check
       if (
-        regData.ocrExtractedAmount != null &&
-        Math.abs(regData.ocrExtractedAmount - txData.amount) > AMOUNT_TOLERANCE
+        regData.selfReportedAmount != null &&
+        Math.abs(regData.selfReportedAmount - txData.amount) > AMOUNT_TOLERANCE
       ) {
         await regDoc.ref.update({
-          adminNotes: `Amount mismatch: OCR=${regData.ocrExtractedAmount}, Bank=${txData.amount}`,
+          adminNotes: `Amount mismatch: reported=${regData.selfReportedAmount}, Bank=${txData.amount}`,
         });
         continue;
       }

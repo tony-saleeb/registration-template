@@ -7,6 +7,7 @@ import { uploadPaymentScreenshot, UploadProgress } from '@/lib/firebase/storage'
 import {
   isValidName,
   isValidEgyptianPhone,
+  isValidTransferReference,
   normalizePhone,
   VALIDATION_MESSAGES,
 } from '@/lib/validation';
@@ -75,6 +76,8 @@ export default function RegisterPage() {
     phoneNumber: '',
     whatsappNumber: '',
     sameAsPhone: true,
+    selfReportedReference: '',
+    selfReportedAmount: '',
     paymentScreenshot: null,
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -128,6 +131,19 @@ export default function RegisterPage() {
         }
         break;
       case 3: // Payment
+        if (!formData.selfReportedReference.trim()) {
+          newErrors.selfReportedReference = VALIDATION_MESSAGES.referenceRequired;
+        } else if (!isValidTransferReference(formData.selfReportedReference)) {
+          newErrors.selfReportedReference = VALIDATION_MESSAGES.referenceInvalid;
+        }
+        if (!formData.selfReportedAmount.trim()) {
+          newErrors.selfReportedAmount = VALIDATION_MESSAGES.amountRequired;
+        } else {
+          const amount = Number(formData.selfReportedAmount);
+          if (!Number.isFinite(amount) || amount <= 0) {
+            newErrors.selfReportedAmount = VALIDATION_MESSAGES.amountInvalid;
+          }
+        }
         if (!formData.paymentScreenshot) {
           newErrors.paymentScreenshot = VALIDATION_MESSAGES.screenshotRequired;
         }
@@ -222,11 +238,8 @@ export default function RegisterPage() {
           church: churchName,
           paymentScreenshotUrl: screenshotUrl,
           status: 'pending_verification',
-          ocrStatus: 'queued',
-          ocrExtractedReference: null,
-          ocrExtractedAmount: null,
-          ocrExtractedSenderName: null,
-          ocrConfidence: null,
+          selfReportedReference: formData.selfReportedReference.trim().toUpperCase(),
+          selfReportedAmount: Number(formData.selfReportedAmount),
           adminNotes: null,
           createdAt: serverTimestamp(),
           verifiedAt: null,
@@ -429,9 +442,72 @@ export default function RegisterPage() {
           </div>
         );
 
-      case 3: // Payment Screenshot
+      case 3: // Payment details + screenshot
         return (
           <div className="fade-in">
+            <div style={{ marginBottom: '1.25rem' }}>
+              <label className="form-label" htmlFor="selfReportedReference">رقم العملية</label>
+              <input
+                id="selfReportedReference"
+                type="text"
+                className={`form-input ${errors.selfReportedReference ? 'form-input-error' : ''}`}
+                placeholder="مثال: TEST12345"
+                value={formData.selfReportedReference}
+                onChange={(e) => updateField('selfReportedReference', e.target.value)}
+                inputMode="text"
+                autoComplete="off"
+                dir="ltr"
+                style={{ textAlign: 'left' }}
+              />
+              <p style={{
+                fontSize: '0.8125rem',
+                color: 'rgba(255,255,255,0.45)',
+                marginTop: '0.5rem',
+                lineHeight: 1.6,
+              }}>
+                رقم العملية موجود في رسالة التأكيد بعد التحويل
+              </p>
+              {errors.selfReportedReference && (
+                <p className="form-error">{errors.selfReportedReference}</p>
+              )}
+            </div>
+
+            <div style={{ marginBottom: '1.25rem' }}>
+              <label className="form-label" htmlFor="selfReportedAmount">المبلغ المحوَّل</label>
+              <div style={{ position: 'relative' }}>
+                <input
+                  id="selfReportedAmount"
+                  type="number"
+                  className={`form-input ${errors.selfReportedAmount ? 'form-input-error' : ''}`}
+                  placeholder="400"
+                  value={formData.selfReportedAmount}
+                  onChange={(e) => updateField('selfReportedAmount', e.target.value)}
+                  inputMode="decimal"
+                  min="0"
+                  step="any"
+                  dir="ltr"
+                  style={{ textAlign: 'left', paddingLeft: '3.25rem' }}
+                />
+                <span
+                  style={{
+                    position: 'absolute',
+                    left: '0.875rem',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    color: 'rgba(255,255,255,0.45)',
+                    fontSize: '0.875rem',
+                    fontWeight: 600,
+                    pointerEvents: 'none',
+                  }}
+                >
+                  EGP
+                </span>
+              </div>
+              {errors.selfReportedAmount && (
+                <p className="form-error">{errors.selfReportedAmount}</p>
+              )}
+            </div>
+
             <label className="form-label">صورة إيصال الدفع</label>
             <p style={{
               fontSize: '0.8125rem',
@@ -557,7 +633,16 @@ export default function RegisterPage() {
           return phoneValid && isValidEgyptianPhone(formData.whatsappNumber);
         }
         return phoneValid;
-      case 3: return formData.paymentScreenshot !== null;
+      case 3: {
+        const amount = Number(formData.selfReportedAmount);
+        return (
+          isValidTransferReference(formData.selfReportedReference) &&
+          formData.selfReportedAmount.trim().length > 0 &&
+          Number.isFinite(amount) &&
+          amount > 0 &&
+          formData.paymentScreenshot !== null
+        );
+      }
       default: return false;
     }
   };

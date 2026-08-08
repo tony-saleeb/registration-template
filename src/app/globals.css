@@ -703,21 +703,6 @@ body {
     border-radius: 1rem !important;
   }
 
-  /* Scan page camera box scaling */
-  #qr-reader {
-    width: 100% !important;
-    max-width: 22rem !important;
-    margin: 0 auto !important;
-    border-radius: 1rem !important;
-    overflow: hidden !important;
-  }
-
-  #qr-reader video {
-    width: 100% !important;
-    height: auto !important;
-    border-radius: 1rem !important;
-    object-fit: cover !important;
-  }
 }
 
 /* ─── Skeleton Loading Animations ─────────────────────────────── */

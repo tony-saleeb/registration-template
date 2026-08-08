@@ -10,15 +10,17 @@ service cloud.firestore {
       allow create: if true
         && request.resource.data.keys().hasAll([
           'fullName', 'phoneNumber', 'whatsappNumber', 'church',
-          'paymentScreenshotUrl', 'status', 'ocrStatus', 'createdAt'
+          'paymentScreenshotUrl', 'status', 'selfReportedReference',
+          'selfReportedAmount', 'createdAt'
         ])
         && request.resource.data.status == 'pending_verification'
-        && request.resource.data.ocrStatus == 'queued'
         && request.resource.data.fullName is string
         && request.resource.data.phoneNumber is string
         && request.resource.data.whatsappNumber is string
         && request.resource.data.church is string
-        && request.resource.data.paymentScreenshotUrl is string;
+        && request.resource.data.paymentScreenshotUrl is string
+        && request.resource.data.selfReportedReference is string
+        && request.resource.data.selfReportedAmount is number;
 
       allow read: if true;  // Status page needs to read own doc (no auth)
       allow update, delete: if false;  // Only Admin SDK (Cloud Functions / API routes)
