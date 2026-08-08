@@ -24,15 +24,6 @@ export function isValidName(name: string): boolean {
   return words.length >= 3 && words.every((w) => w.length >= 2);
 }
 
-/** Check if an amount is within tolerance of the expected amount */
-export function isAmountWithinTolerance(
-  actual: number,
-  expected: number,
-  tolerance: number = 5
-): boolean {
-  return Math.abs(actual - expected) <= tolerance;
-}
-
 /** Validate a self-reported bank transfer reference (trimmed; 4–40 chars) */
 export function isValidTransferReference(ref: string): boolean {
   const trimmed = ref.trim();

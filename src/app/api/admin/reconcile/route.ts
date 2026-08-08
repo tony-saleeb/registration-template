@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     // Query registrants awaiting match against the bank statement
     const snapshot = await db
       .collection('registrants')
-      .where('status', '==', 'manual_review')
+      .where('status', 'in', ['pending_verification', 'manual_review'])
       .get();
 
     let matched = 0;
@@ -44,6 +44,7 @@ export async function POST(request: NextRequest) {
       if (txData.matchedRegistrantId && txData.matchedRegistrantId !== regDoc.id) {
         // Flag both registrants for manual review with duplicate warning
         await regDoc.ref.update({
+          status: 'manual_review',
           adminNotes: `⚠️ Duplicate reference detected — also matched to ${txData.matchedRegistrantId}`,
         });
         duplicates++;
@@ -56,6 +57,7 @@ export async function POST(request: NextRequest) {
         Math.abs(regData.selfReportedAmount - txData.amount) > AMOUNT_TOLERANCE
       ) {
         await regDoc.ref.update({
+          status: 'manual_review',
           adminNotes: `Amount mismatch: reported=${regData.selfReportedAmount}, Bank=${txData.amount}`,
         });
         continue;
