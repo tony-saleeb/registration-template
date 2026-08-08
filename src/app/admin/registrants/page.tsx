@@ -132,7 +132,8 @@ export default function RegistrantsPage() {
       'رقم الموبايل': item.data.phoneNumber ? `="${item.data.phoneNumber}"` : '',
       'رقم الواتساب': (item.data.whatsappNumber || item.data.phoneNumber) ? `="${item.data.whatsappNumber || item.data.phoneNumber}"` : '',
       'حالة الطلب': STATUS_LABELS[item.data.status]?.label || item.data.status,
-      'مرجع الإيصال': '',
+      'مرجع الإيصال': item.data.selfReportedReference ? `="${item.data.selfReportedReference}"` : '',
+      'المبلغ': item.data.selfReportedAmount != null ? item.data.selfReportedAmount : '',
       'تاريخ التسجيل': item.data.createdAt?.toDate?.()
         ? new Date(item.data.createdAt.toDate()).toLocaleDateString('ar-EG')
         : '',
@@ -409,6 +410,7 @@ export default function RegistrantsPage() {
                   <th style={{ color: '#fbba33', padding: '1rem 1.25rem', textAlign: 'right', fontWeight: 700 }}>رقم الموبايل</th>
                   <th style={{ color: '#fbba33', padding: '1rem 1.25rem', textAlign: 'right', fontWeight: 700 }}>حالة الطلب</th>
                   <th style={{ color: '#fbba33', padding: '1rem 1.25rem', textAlign: 'right', fontWeight: 700 }}>مرجع الإيصال</th>
+                  <th style={{ color: '#fbba33', padding: '1rem 1.25rem', textAlign: 'right', fontWeight: 700 }}>المبلغ</th>
                   <th style={{ color: '#fbba33', padding: '1rem 1.25rem', textAlign: 'right', fontWeight: 700 }}>تاريخ التسجيل</th>
                   <th style={{ color: '#fbba33', padding: '1rem 1.25rem', textAlign: 'center', fontWeight: 700 }}>إجراءات</th>
                 </tr>
@@ -435,7 +437,10 @@ export default function RegistrantsPage() {
                         </span>
                       </td>
                       <td style={{ fontSize: '0.875rem', color: '#fbba33', padding: '1rem 1.25rem', fontFamily: 'monospace' }}>
-                        —
+                        {item.data.selfReportedReference || '—'}
+                      </td>
+                      <td style={{ fontSize: '0.875rem', color: '#fbba33', padding: '1rem 1.25rem', fontFamily: 'monospace' }}>
+                        {item.data.selfReportedAmount != null ? `${item.data.selfReportedAmount} جم` : '—'}
                       </td>
                       <td style={{ fontSize: '0.8125rem', color: 'rgba(247, 240, 228, 0.55)', padding: '1rem 1.25rem' }}>
                         {item.data.createdAt?.toDate?.()

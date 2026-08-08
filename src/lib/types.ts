@@ -15,6 +15,8 @@ export interface Registrant {
   church: string;
   paymentScreenshotUrl: string;
   status: RegistrantStatus;
+  selfReportedReference: string | null;
+  selfReportedAmount: number | null;
   adminNotes: string | null;
   createdAt: Timestamp;
   verifiedAt: Timestamp | null;
@@ -80,6 +82,8 @@ export interface RegistrationFormData {
   phoneNumber: string;
   whatsappNumber: string;
   sameAsPhone: boolean;
+  selfReportedReference: string;
+  selfReportedAmount: string;
   paymentScreenshot: File | null;
 }
 

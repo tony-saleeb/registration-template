@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { safeImageSrc, isValidEgyptianPhone, normalizePhone, isValidName } from './validation';
+import {
+  safeImageSrc,
+  isValidEgyptianPhone,
+  normalizePhone,
+  isValidName,
+  isValidTransferReference,
+} from './validation';
 
 describe('safeImageSrc', () => {
   it('allows valid base64 data URIs for jpeg, png, and webp', () => {
@@ -61,5 +67,28 @@ describe('isValidName', () => {
     expect(isValidName('مينا مجدي')).toBe(false);
     expect(isValidName('أ ب ج')).toBe(false);
     expect(isValidName('')).toBe(false);
+  });
+});
+
+describe('isValidTransferReference', () => {
+  it('accepts valid alphanumeric references', () => {
+    expect(isValidTransferReference('TEST12345')).toBe(true);
+    expect(isValidTransferReference('ab12')).toBe(true);
+  });
+
+  it('rejects too short (3 chars) and too long (41 chars)', () => {
+    expect(isValidTransferReference('ABC')).toBe(false);
+    expect(isValidTransferReference('A'.repeat(41))).toBe(false);
+  });
+
+  it('rejects spaces and Arabic characters', () => {
+    expect(isValidTransferReference('TEST 123')).toBe(false);
+    expect(isValidTransferReference('عملية١٢٣')).toBe(false);
+  });
+
+  it('accepts dash and slash', () => {
+    expect(isValidTransferReference('REF-1234')).toBe(true);
+    expect(isValidTransferReference('REF/1234')).toBe(true);
+    expect(isValidTransferReference('REF_1234')).toBe(true);
   });
 });

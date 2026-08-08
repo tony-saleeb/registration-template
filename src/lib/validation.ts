@@ -33,6 +33,13 @@ export function isAmountWithinTolerance(
   return Math.abs(actual - expected) <= tolerance;
 }
 
+/** Validate a self-reported bank transfer reference (trimmed; 4–40 chars) */
+export function isValidTransferReference(ref: string): boolean {
+  const trimmed = ref.trim();
+  if (trimmed.length < 4 || trimmed.length > 40) return false;
+  return /^[A-Za-z0-9/_-]+$/.test(trimmed);
+}
+
 /** Validation error messages in Arabic */
 export const VALIDATION_MESSAGES = {
   nameRequired: 'برجاء إدخال الاسم ثلاثي على الأقل',
@@ -43,6 +50,10 @@ export const VALIDATION_MESSAGES = {
   phoneInvalid: 'رقم الموبايل غير صحيح، تأكد من كتابة ١١ رقم يبدأ بـ 01',
   whatsappRequired: 'برجاء إدخال رقم الواتساب',
   whatsappInvalid: 'رقم الواتساب غير صحيح، تأكد من كتابة ١١ رقم يبدأ بـ 01',
+  referenceRequired: 'يرجى إدخال رقم العملية',
+  referenceInvalid: 'رقم العملية غير صحيح',
+  amountRequired: 'يرجى إدخال المبلغ المحوَّل',
+  amountInvalid: 'المبلغ غير صحيح',
   screenshotRequired: 'برجاء إرفاق صورة إيصال الدفع',
   duplicatePhone: 'هذا الرقم مسجّل بالفعل',
   uploadFailed: 'فشل رفع الصورة، برجاء المحاولة مرة أخرى',

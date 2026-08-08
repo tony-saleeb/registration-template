@@ -352,6 +352,28 @@ export default function ReviewPage() {
                           <line x1="12" y1="18" x2="12.01" y2="18" />
                         </svg>
                       </div>
+
+                      {item.data.selfReportedReference && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fbba33" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <line x1="4" y1="9" x2="20" y2="9" />
+                            <line x1="4" y1="15" x2="20" y2="15" />
+                            <line x1="10" y1="3" x2="8" y2="21" />
+                            <line x1="16" y1="3" x2="14" y2="21" />
+                          </svg>
+                          <span>مرجع: {item.data.selfReportedReference}</span>
+                        </div>
+                      )}
+
+                      {item.data.selfReportedAmount != null && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fbba33" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <rect x="2" y="6" width="20" height="12" rx="2" />
+                            <circle cx="12" cy="12" r="2" />
+                          </svg>
+                          <span style={{ fontWeight: 700, color: '#fbba33' }}>{item.data.selfReportedAmount} جم</span>
+                        </div>
+                      )}
                     </div>
 
                     {item.data.adminNotes && (
